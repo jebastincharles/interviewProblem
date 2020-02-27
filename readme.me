@@ -1,0 +1,23 @@
+Assumptions :
+  1. The file copy functionality is not added, since this problem revolves around how files are highly available in cluster.nced by
+  2. Files are referenced by filepath alone. File contents are not taken into consideration.
+  3. Please add JUNIT library for validation of unit testcases.Please let me know if i need to share the library.
+ 
+
+ Solution :
+
+ 1. Cluster will have map of hostname and Host object.
+ 2. Each Host will have host basic details, map of filename and fileContent, and map of files grouped by replicationHost ( Map <replicationhost, List<filenames>)
+ 3. Whenever host go down , we iterate each host , pass the hostname that gone down and get the list of files from hashmap present in each Host in O(1) times. But we have to navigate through the all hosts (n).O(n) time Complexity.
+ 4. Accumulate the results and find random host for each batch of files present in each host where reference of lost files present.
+ i.e. if replicated files present in m host,  then O(m) time complexity.
+ 5. Add the file in the target host, also add refernce in source host. So the time complexity is O(2m) ~ O(n)
+
+ So overall the time complexity for remove operation is O(n).
+
+ Space complexity
+ Let say there are n hosts and m files , so the space complexity is O(nm).
+
+ Inference :
+
+ If a file f1 is present in 2 hosts h1 (source) and h2 (replicated). If both h1 and h2 gone down at the same time, then f1 is lost. We will not have copy of f1 anywhere.
